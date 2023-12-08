@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat Test</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-image: url('foto.jpeg');
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      #message_container {
+        max-height: 400px; /* Altura máxima del contenedor de mensajes */
+        overflow-y: auto; /* Hacer que el contenedor sea desplazable verticalmente */
+      }
+
+      #message_box {
+        background-color: rgba(200, 200, 200, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+      }
+
+      input[type="text"] {
+        padding: 8px;
+        margin: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button#message_box_join_button {
+        background-color: #3498db;
+        color: #fff;
+      }
+
+      button#message_box_create_button {
+        background-color: #2ecc71;
+        color: #fff;
+      }
+
+      button#message_box_send_button {
+        background-color: #e74c3c;
+        color: #fff;
+      }
+
+      button:hover {
+        background-color: #555;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      p {
+        animation: fadeIn 0.5s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>WebSocket Chat Test</h2>
+    <div id="message_box">
+      Room: <input id="message_box_room_input" type="text" style="width:100px" value="default" />
+      <button id="message_box_join_button" onclick="joinRoom()">join room</button>
+      <button id="message_box_create_button" onclick="createRoom()">create room</button>
+      <br/>
+
+      Message: <input id="message_box_input" type="text" style="width:400px" />
+      <button id="message_box_send_button" onclick="sendMessage()">send message</button>
+    </div>
+
+    <div id="message_container">
+      <div id="output"></div>
+    </div>
+
+    <script language="javascript" type="text/javascript">
+      /* UI functions */
+      function createRoom() {
+        var messageBoxRoomInput = document.getElementById("message_box_room_input");
+        request = {
+          command: "create",
+          room: messageBoxRoomInput.value
+        }
+        doSend(JSON.stringify(request))
+      }
+      function joinRoom() {
+        var messageBoxRoomInput = document.getElementById("message_box_room_input");
+        request = {
+          command: "join",
+          room: messageBoxRoomInput.value
+        }
+        doSend(JSON.stringify(request))
+      }
+
+      function sendMessage() {
+        var messageBoxRoomInput = document.getElementById("message_box_room_input");
+        var messageBoxInput = document.getElementById("message_box_input");
+        request = {
+          room: message_box_room_input.value,
+          message: messageBoxInput.value
+        }
+        doSend(JSON.stringify(request))
+      }
+
+      /* WebSockets functions */
+      var wsUri = "ws://" + location.host + "/chat";
+      var output;
+      var websocket;
+      function init() {
+        output = document.getElementById("output");
+        testWebSocket();
+      }
+      function testWebSocket() {
+        websocket = new WebSocket(wsUri + "?access_token=" + getParameterByName("access_token"));
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+      }
+      function onOpen(evt) {
+        writeToScreen("CONNECTED");
+        //doSend(JSON.stringify({command: "join"}));
+      }
+      function onClose(evt) {
+        writeToScreen("DISCONNECTED pipipi");
+      }
+      function onMessage(evt) {
+        response = JSON.parse(evt.data);
+        if (isError(response)) {
+          writeToScreen('<span style="color: red;">EROR: ' + response.error + '</span>');
+        } else if (isSuccess(response)) {
+          writeToScreen('<span style="color: green;">SUCCESS: ' + response.success + '</span>');
+        } else if (isSystemMessage(response)) {
+          writeToScreen('<span style="color: gray;">' + response.room +': ' + response.message + '</span>');
+        } else {
+          writeToScreen('<span style="color: blue;">' + response.room +': (' + response.from + ') ' + response.message + '</span>');
+        }
+      }
+      function onError(evt) {
+        writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+      }
+      function doSend(message) {
+        writeToScreen("SENT: " + message);
+        websocket.send(message);
+      }
+      function writeToScreen(message) {
+        var pre = document.createElement("p");
+        pre.style.wordWrap = "break-word";
+        pre.style.backgroundColor = "rgba(200, 200, 200, 0.8)"; // Fondo semi-transparente gris claro
+        pre.style.padding = "10px"; // Ajusta el espacio interno según tus preferencias
+        pre.style.borderRadius = "8px"; // Bordes curvos
+        pre.innerHTML = message;
+        output.appendChild(pre);
+      }
+      window.addEventListener("load", init, false);
+
+      /* Helper functions */
+      function isError(response) {
+        return response.error != undefined
+      }
+      function isSuccess(response) {
+        return response.success != undefined
+      }
+      function isSystemMessage(response) {
+        return response.from == undefined
+      }
+      /* From: https://stackoverflow.com/a/5158301 */
+      function getParameterByName(name) {
+        var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+      }
+    </script>
+  </body>
+  </html>
