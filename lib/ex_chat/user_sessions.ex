@@ -52,8 +52,8 @@ defmodule ExChat.UserSessions do
 
   defp find(session_id) do
     case Registry.lookup(UserSessionRegistry, session_id) do
-       [] -> nil
-       [{pid, nil}] -> pid
+      [] -> nil
+      [{pid, nil}] -> pid
     end
   end
 end
