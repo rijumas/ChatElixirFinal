@@ -63,23 +63,19 @@ defmodule ExChat.UserSessions do
   defp find(session_id) do
     listG = ExChat.GlobalListUS.get_list()
     IO.inspect(listG, label: "Contenido de la lista global:")
-
-    case Registry.lookup(UserSessionRegistry, session_id) do
-      [] -> nil
-      [{pid, nil}] -> pid
-    end
+    find_US(session_id,listG)
   end
 
-  defp find_US(_room, []) do
+  defp find_US(_session_id, []) do
     nil
   end
 
-  defp find_US(room, [head | tail]) do
-      if head == room do
-        [{pid, nil}] = Registry.lookup(ChatRoomRegistry, room)
+  defp find_US(session_id, [head | tail]) do
+      if head == session_id do
+        [{pid, nil}] = Registry.lookup(UserSessionRegistry, session_id)
         pid
       else
-        find_US(room, tail)
+        find_US(session_id, tail)
       end
   end
 
