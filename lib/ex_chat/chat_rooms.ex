@@ -1,7 +1,10 @@
+
+
 defmodule ExChat.ChatRooms do
   use Supervisor
 
   alias ExChat.{ChatRoom, ChatRoomRegistry}
+  alias ExChat.GlobalList
 
   ##############
   # Client API #
@@ -12,6 +15,7 @@ defmodule ExChat.ChatRooms do
       {:ok, _pid} ->
         {:error, :already_exists}
       {:error, :unexisting_room} ->
+        add_to_global_list(room)
         {:ok, _pid} = start(room)
         :ok
     end
@@ -43,11 +47,32 @@ defmodule ExChat.ChatRooms do
   end
 
   defp find(room) do
-    case Registry.lookup(ChatRoomRegistry, room) do
-      [] -> {:error, :unexisting_room}
-      [{pid, nil}] -> {:ok, pid}
-    end
+      listG = ExChat.GlobalList.get_list()
+      IO.inspect(listG, label: "Contenido de la lista global:")
+      find_room(room, listG)
   end
+
+  defp find_room(_room, []) do
+      {:error, :unexisting_room}
+  end
+
+  defp find_room(room, [head | tail]) do
+      if head == room do
+        [{pid, nil}] = Registry.lookup(ChatRoomRegistry, room)
+        {:ok, pid}
+      else
+        find_room(room, tail)
+      end
+  end
+
+  def add_to_global_list(item) do
+    GlobalList.add_element(item)
+  end
+
+  def get_global_list do
+    GlobalList.get_list()
+  end
+
 
   ####################
   # Server Callbacks #
