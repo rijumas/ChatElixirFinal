@@ -175,6 +175,7 @@
           message: messageBoxInput.value
         }
         doSend(JSON.stringify(request))
+        messageBoxInput.value = "";
       }
 
       /* WebSockets functions */
