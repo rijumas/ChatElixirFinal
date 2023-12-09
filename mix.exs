@@ -21,7 +21,7 @@ defmodule ExChat.MixProject do
     ]
   end
 
-  defp applications(:dev), do: applications(:all) ++ [:remix]
+  #defp applications(:dev), do: applications(:all) ++ [:remix]
   defp applications(_all), do: [:cowboy, :plug, :logger]
 
   def aliases do
@@ -40,7 +40,7 @@ defmodule ExChat.MixProject do
       {:mock, "~> 0.3.3", only: :test},           # Dependencia: mock (manejador de mocks)
 
       # Developments
-      {:remix, "~> 0.0.2", only: :dev}            # Dependencia: remix (manejador de tareas)
+   #   {:remix, "~> 0.0.2", only: :dev}            # Dependencia: remix (manejador de tareas)
     ]
   end
 end
