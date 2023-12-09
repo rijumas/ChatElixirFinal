@@ -2,6 +2,7 @@ defmodule ExChat.UserSessions do
   use Supervisor
 
   alias ExChat.{UserSession, UserSessionRegistry}
+  alias ExChat.GlobalListUS
 
   ##############
   # Client API #
@@ -10,6 +11,7 @@ defmodule ExChat.UserSessions do
   def create(session_id) do
     case find(session_id) do
       nil ->
+        add_to_global_list(session_id)
         start(session_id)
         :ok
       _pid ->
@@ -29,6 +31,14 @@ defmodule ExChat.UserSessions do
       nil -> {:error, :session_not_exists}
       pid -> UserSession.notify(pid, message)
     end
+  end
+
+  def add_to_global_list(item) do
+    GlobalListUS.add_element(item)
+  end
+
+  def get_global_list do
+    GlobalListUS.get_list()
   end
 
   ####################
@@ -51,9 +61,26 @@ defmodule ExChat.UserSessions do
   end
 
   defp find(session_id) do
+    listG = ExChat.GlobalListUS.get_list()
+    IO.inspect(listG, label: "Contenido de la lista global:")
+
     case Registry.lookup(UserSessionRegistry, session_id) do
        [] -> nil
        [{pid, nil}] -> pid
     end
   end
+
+  defp find_US(_room, []) do
+    nil
+  end
+
+  defp find_US(room, [head | tail]) do
+      if head == room do
+        [{pid, nil}] = Registry.lookup(ChatRoomRegistry, room)
+        pid
+      else
+        find_US(room, tail)
+      end
+  end
+
 end

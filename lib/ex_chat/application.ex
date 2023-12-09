@@ -15,6 +15,8 @@ defmodule ExChat.Application do
       {Registry, keys: :unique, name: ExChat.ChatRoomRegistry},
       {Registry, keys: :unique, name: ExChat.UserSessionRegistry},
       {ExChat.GlobalList, []},
+      {ExChat.GlobalListUS, []},
+      {ExChat.GlobalListUC, []},
       ExChat.ChatRooms,
       ExChat.UserSessions,
       ExChat.AccessTokenRepository,
