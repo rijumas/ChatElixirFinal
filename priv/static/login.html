@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetaChat Elixir</title>
+  <link rel="icon" href="images/chat.png" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="css/login.css">
+
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">
+      <img src="images/chat.png" alt="Logo">
+      <div class="title">MetaChat Elixir</div>
+    </div>
+    <button class="register-button" onclick="togglePopup()">Register</button>
+  </div>
+
+  <!-- Contenido del popup -->
+  <div id="popup" class="popup">
+    <span class="close" onclick="togglePopup()">&times;</span>
+    <h2>Register</h2>
+    <form class="register-form" action="/register" method="POST" onsubmit="return registerUser()">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit" id="register-submit" class="login-button">Register</button>
+    </form>
+    <!-- Nuevo elemento para mostrar el mensaje de registro exitoso -->
+    <div id="registration-success" style="display: none; color: green; margin-top: 10px;">
+      Registration successful! You can now log in.
+    </div>
+  </div>
+
+  <!-- Overlay para oscurecer el fondo -->
+  <div id="overlay" onclick="togglePopup()"></div>
+
+  <div class="login-container">
+    <form class="login-form" action="/login" method="POST">
+      <label for="username">Username</label>
+      <input type="text" id="login-username" name="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="login-password" name="password" required>
+
+      <button type="submit" class="login-button">Login</button>
+    </form>
+  </div>
+
+  <script>
+    function togglePopup() {
+      const popup = document.getElementById('popup');
+      popup.classList.toggle('visible');
+      const overlay = document.getElementById('overlay');
+      overlay.style.display = popup.classList.contains('visible') ? 'block' : 'none';
+      // Restablece el mensaje de registro exitoso al cerrar el popup
+      document.getElementById('registration-success').style.display = 'none';
+    }
+  
+    function registerUser() {
+      // Simula el registro exitoso (reemplaza esto con tu lógica real)
+      document.getElementById('registration-success').style.display = 'block';
+      // Retorna false para evitar el envío del formulario
+      return false;
+    }
+  
+    // Agrega evento para cerrar el popup con la tecla "Escape"
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        if (document.getElementById('popup').classList.contains('visible')) {
+          togglePopup();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

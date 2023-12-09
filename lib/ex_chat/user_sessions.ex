@@ -65,8 +65,8 @@ defmodule ExChat.UserSessions do
     IO.inspect(listG, label: "Contenido de la lista global:")
 
     case Registry.lookup(UserSessionRegistry, session_id) do
-       [] -> nil
-       [{pid, nil}] -> pid
+      [] -> nil
+      [{pid, nil}] -> pid
     end
   end
 
