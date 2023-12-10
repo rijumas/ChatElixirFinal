@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MetaChat Elixir</title>
+  <title>Login MetaChat Elixir</title>
   <link rel="icon" href="images/chat.png" type="image/x-icon">
   <link rel="stylesheet" type="text/css" href="css/login.css">
 
 </head>
 <body>
+
   <div class="navbar">
     <div class="logo">
       <img src="images/chat.png" alt="Logo">
@@ -30,6 +31,7 @@
 
       <button type="button" id="register-submit" class="login-button" onclick="registerUser()">Sign Up</button>
     </form>
+    
     <!-- Nuevo elemento para mostrar el mensaje de registro exitoso -->
     <div id="registration-success" style="display: none; color: green; margin-top: 10px;">
       Registration successful! You can now log in.
@@ -37,7 +39,8 @@
   </div>
 
   <!-- Overlay para oscurecer el fondo -->
-  <div id="overlay" onclick="togglePopup()"></div>
+  <div id="overlay" onclick="togglePopup()">
+  </div>
 
   <div class="login-container">
     <form class="login-form" id="loginForm">

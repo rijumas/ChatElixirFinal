@@ -40,7 +40,7 @@ defmodule ExChat.MixProject do
       {:mock, "~> 0.3.3", only: :test},           # Dependencia: mock (manejador de mocks)
       {:jason, "~> 1.2"},
       # Developments
-      {:remix, "~> 0.0.2", only: :dev}            # Dependencia: remix (manejador de tareas)
+      #{:remix, "~> 0.0.2", only: :dev}            # Dependencia: remix (manejador de tareas)
     ]
   end
 end
