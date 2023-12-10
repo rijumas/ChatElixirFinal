@@ -13,6 +13,21 @@ defmodule ExChat.GlobalListUC do
     GenServer.call(ExChat.GlobalListUC, :get_list)
   end
 
+  def valid_credentials?(%{"username" => username, "password" => password}) do
+    # Aquí deberías tener lógica para verificar si las credenciales son válidas
+    # Puedes acceder a la lista de usuarios almacenada en el estado del GenServer
+    # y realizar la verificación adecuada
+    user_list = get_list()
+    Enum.any?(user_list, &match_credentials?(&1, username, password))
+  end
+
+  defp match_credentials?(user, username, password) do
+    # Aquí defines la lógica para comparar el usuario y la contraseña
+    # con las credenciales proporcionadas
+    # Este es solo un ejemplo, deberías adaptarlo según tu implementación
+    Map.get(user, "username") == username && Map.get(user, "password") == password
+  end
+
   def child_spec(arg) do
     %{
       id: __MODULE__,

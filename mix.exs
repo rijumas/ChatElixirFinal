@@ -38,9 +38,9 @@ defmodule ExChat.MixProject do
       {:poison, "~> 3.1"},                        # Dependencia: poison (manejador de JSON)
       {:websockex, "~> 0.4.0", only: :test},      # Dependencia: websockex (manejador de websockets)
       {:mock, "~> 0.3.3", only: :test},           # Dependencia: mock (manejador de mocks)
-
+      {:jason, "~> 1.2"},
       # Developments
-   #   {:remix, "~> 0.0.2", only: :dev}            # Dependencia: remix (manejador de tareas)
+      {:remix, "~> 0.0.2", only: :dev}            # Dependencia: remix (manejador de tareas)
     ]
   end
 end

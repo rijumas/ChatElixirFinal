@@ -21,14 +21,14 @@
   <div id="popup" class="popup">
     <span class="close" onclick="togglePopup()">&times;</span>
     <h2>Register</h2>
-    <form class="register-form" action="/register" method="POST" onsubmit="return registerUser()">
+    <form class="register-form" id="registerForm" method="POST">
       <label for="username">Username</label>
-      <input type="text" id="username" name="username" required>
+      <input type="text" id="register-username" name="username" required onkeypress="checkEnterRegister(event)">
 
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" required>
+      <input type="password" id="register-password" name="password" required onkeypress="checkEnterRegister(event)">
 
-      <button type="submit" id="register-submit" class="login-button">Register</button>
+      <button type="button" id="register-submit" class="login-button" onclick="registerUser()">Sign Up</button>
     </form>
     <!-- Nuevo elemento para mostrar el mensaje de registro exitoso -->
     <div id="registration-success" style="display: none; color: green; margin-top: 10px;">
@@ -40,18 +40,29 @@
   <div id="overlay" onclick="togglePopup()"></div>
 
   <div class="login-container">
-    <form class="login-form" action="/login" method="POST">
+    <form class="login-form" id="loginForm">
+      <h2 style="text-align: center;">Login</h2>
       <label for="username">Username</label>
-      <input type="text" id="login-username" name="username" required>
+      <input type="text" id="login-username" name="username" required onkeypress="checkEnterLogin(event)">
 
       <label for="password">Password</label>
-      <input type="password" id="login-password" name="password" required>
+      <input type="password" id="login-password" name="password" required onkeypress="checkEnterLogin(event)">
 
-      <button type="submit" class="login-button">Login</button>
+      <button type="button" class="login-button" onclick="loginUser()">Sign in</button>
+      <div id="login-error" style="display: none; color: red; margin-top: 10px;">
+        Incorrect username or password. Please try again.
+      </div>
     </form>
   </div>
 
   <script>
+
+    function checkEnterRegister(event) {
+      if (event.key === 'Enter') {
+        registerUser();
+      }
+    }
+
     function togglePopup() {
       const popup = document.getElementById('popup');
       popup.classList.toggle('visible');
@@ -61,9 +72,43 @@
       document.getElementById('registration-success').style.display = 'none';
     }
   
-    function registerUser() {
-      // Simula el registro exitoso (reemplaza esto con tu lógica real)
-      document.getElementById('registration-success').style.display = 'block';
+    async function registerUser() {
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
+      
+      // Construye el objeto de datos
+      const userData = {
+        username: username,
+        password: password
+      };
+
+      // Realiza la solicitud POST
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        });
+
+        if (response.ok) {
+          const result = await response.text();
+          console.log(result);
+          document.getElementById('registration-success').style.display = 'block';
+          setTimeout(() => {
+            document.getElementById('register-username').value = '';
+            document.getElementById('register-password').value = '';
+            togglePopup();
+          }, 1500);
+        } else {
+          console.error('Error en la solicitud:', response.statusText);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error en la solicitud del tipo:', error);
+      }
+
       // Retorna false para evitar el envío del formulario
       return false;
     }
@@ -76,6 +121,48 @@
         }
       }
     });
+
+    async function loginUser() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+  
+      // Construye el objeto de datos
+      const userData = {
+        username: username,
+        password: password
+      };
+  
+      // Realiza la solicitud POST para el inicio de sesión
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        });
+  
+        if (response.ok) {
+          // Obtiene la respuesta JSON del servidor
+          const result = await response.json();
+  
+          // Redirige a la URL proporcionada por el servidor
+          console.log(result.redirect_url)
+          window.location.href = result.redirect_url;
+        } else {
+          // Muestra el mensaje de error de inicio de sesión
+          document.getElementById('login-error').style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error en la solicitud del tipo:', error);
+      }
+    }
+
+    function checkEnterLogin(event) {
+      if (event.key === 'Enter') {
+        loginUser();
+      }
+    }
   </script>
 </body>
 </html>

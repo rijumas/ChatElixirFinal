@@ -16,6 +16,66 @@ defmodule ExChat.Web.Router do
   end
 
 
+  match "/register", [:post] do
+    case Plug.Conn.read_body(conn, length: :infinity) do
+      {:ok, body, conn} ->
+        case Jason.decode(body) do
+          {:ok, %{"username" => username, "password" => password}} ->
+            IO.inspect(username, label: "Username")
+            IO.inspect(password, label: "Password")
+
+            # Almacena el usuario y la contraseña en el proceso GenServer
+            ExChat.GlobalListUC.add_element(%{"username" => username, "password" => password})
+
+            user_listUS = ExChat.GlobalListUS.get_list()
+            IO.inspect(user_listUS, label: "Lista de usuarios despues del registro:")
+
+            user_listUC = ExChat.GlobalListUC.get_list()
+            IO.inspect(user_listUC, label: "Lista de usuarios despues del registro:")
+            # Obtener la lista completa y mostrarla
+
+            send_resp(conn, 200, "Datos del formulario recibidos con éxito")
+          {:error, reason} ->
+            IO.inspect("Error al parsear JSON: #{reason}")
+            send_resp(conn, 400, "Error al parsear JSON: #{reason}")
+        end
+
+      {:error, reason, conn} ->
+        IO.inspect("Error al leer el cuerpo del formulario: #{reason}")
+        send_resp(conn, 400, "Error al leer el cuerpo del formulario: #{reason}")
+    end
+  end
+
+  match "/login", [:post] do
+    case Plug.Conn.read_body(conn, length: :infinity) do
+      {:ok, body, conn} ->
+        case Jason.decode(body) do
+          {:ok, %{"username" => username, "password" => password}} ->
+
+            # Verifica las credenciales en ExChat.GlobalListUC
+            if ExChat.GlobalListUC.valid_credentials?(%{"username" => username, "password" => password}) do
+              # Si las credenciales son válidas, construye el JSON con la URL
+              IO.inspect("Login")
+              IO.inspect(username, label: "Username")
+              IO.inspect(password, label: "Password")
+              redirect_url = "/meta_chat##{username}"
+              json_response = Jason.encode!(%{"redirect_url" => redirect_url})
+              IO.inspect(json_response, label: "JSON response")
+              send_resp(conn, 200, json_response)
+            else
+              send_resp(conn, 401, "Credenciales incorrectas")
+            end
+          {:error, reason} ->
+            IO.inspect("Error al parsear JSON: #{reason}")
+            send_resp(conn, 400, "Error al parsear JSON: #{reason}")
+        end
+
+      {:error, reason, conn} ->
+        IO.inspect("Error al leer el cuerpo del formulario: #{reason}")
+        send_resp(conn, 400, "Error al leer el cuerpo del formulario: #{reason}")
+    end
+  end
+
   get "/original" do
     send_resp(conn, 200, "Esta es la página original")
   end
