@@ -32,7 +32,11 @@ defmodule ExChat.Web.Router do
 
             user_listUC = ExChat.GlobalListUC.get_list()
             IO.inspect(user_listUC, label: "Lista de usuarios despues del registro:")
-            # Obtener la lista completa y mostrarla
+
+            #añadiendo sesiones de usuario
+
+            ExChat.UserSessions.create(username)
+            ExChat.AccessTokenRepository.add("#{username}_token", username)
 
             send_resp(conn, 200, "Datos del formulario recibidos con éxito")
           {:error, reason} ->
@@ -58,7 +62,7 @@ defmodule ExChat.Web.Router do
               IO.inspect("Login")
               IO.inspect(username, label: "Username")
               IO.inspect(password, label: "Password")
-              redirect_url = "/meta_chat##{username}"
+              redirect_url = "/meta_chat?access_token=#{username}_token"
               json_response = Jason.encode!(%{"redirect_url" => redirect_url})
               IO.inspect(json_response, label: "JSON response")
               send_resp(conn, 200, json_response)
@@ -76,15 +80,21 @@ defmodule ExChat.Web.Router do
     end
   end
 
-  get "/original" do
-    send_resp(conn, 200, "Esta es la página original")
+  get "meta_chat" do
+    chat_file_path = "priv/static/chat.html"
+    chat_content = File.read!(chat_file_path)
+    html_response(conn, chat_content)
   end
 
-  get "/redireccion" do
-    conn
-    |> put_resp_header("location", "/original")
-    |> send_resp(302, "")
-  end
+  # get "/original" do
+  #   send_resp(conn, 200, "Esta es la página original")
+  # end
+
+  # get "/redireccion" do
+  #   conn
+  #   |> put_resp_header("location", "/original")
+  #   |> send_resp(302, "")
+  # end
 
   match _ do
     send_resp(conn, 404, "Not Found")

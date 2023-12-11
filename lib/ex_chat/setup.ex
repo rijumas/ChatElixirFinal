@@ -8,12 +8,7 @@ defmodule ExChat.Setup do
   end
 
   def run() do
+    # creacion de instancias por defecto
     ChatRooms.create("default")
-
-    UserSessions.create("foo_user")
-    UserSessions.create("bar_user")
-
-    AccessTokenRepository.add("foo_token", "foo_user")
-    AccessTokenRepository.add("bar_token", "bar_user")
   end
 end
