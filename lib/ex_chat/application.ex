@@ -17,6 +17,7 @@ defmodule ExChat.Application do
       {ExChat.GlobalList, []},
       {ExChat.GlobalListUS, []},
       {ExChat.GlobalListUC, []},
+      {ExChat.MessageStore, []},
       ExChat.ChatRooms,
       ExChat.UserSessions,
       ExChat.AccessTokenRepository,
