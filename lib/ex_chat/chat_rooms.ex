@@ -1,7 +1,6 @@
-
-
 defmodule ExChat.ChatRooms do
   use Supervisor
+  require Logger
 
   alias ExChat.{ChatRoom, ChatRoomRegistry}
   alias ExChat.GlobalList
@@ -24,6 +23,7 @@ defmodule ExChat.ChatRooms do
   def join(room, [as: session_id]) do
     case find(room) do
       {:ok, pid} ->
+        #Logger.info("\n JOIN CHAT ROOM - PID: #{inspect pid}")
         try_join_chatroom(pid, session_id)
       {:error, :unexisting_room} ->
         {:error, :unexisting_room}
@@ -48,7 +48,7 @@ defmodule ExChat.ChatRooms do
 
   defp find(room) do
       listG = ExChat.GlobalList.get_list()
-      IO.inspect(listG, label: "Contenido de la lista global:")
+      #IO.inspect(listG, label: "Contenido de la lista global:")
       find_room(room, listG)
   end
 

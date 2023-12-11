@@ -174,7 +174,7 @@
           room: message_box_room_input.value,
           message: messageBoxInput.value
         }
-        console.log(request)
+        console.log(" -> Enviando mensaje: ", request)
         doSend(JSON.stringify(request))
         messageBoxInput.value = "";
       }
@@ -203,7 +203,7 @@
       }
       function onMessage(evt) {
         response = JSON.parse(evt.data);
-        console.log(response)
+        console.log(" -> Mensaje del servidor: ", response)
         
         if (isError(response)) {
           writeToScreen('<span style="color: red;">ERROR: ' + response.error + '</span>');
@@ -251,3 +251,25 @@
     </script>
   </body>
   </html>
+
+
+
+
+
+
+  <!-- cli{join}->server
+  ser{room, message}->client (bueno)
+  ser{erro}->client (malo)
+
+  cli{join}->server
+  ser{cod, 100}->client (bueno) 
+  cli{default, messages}->server
+  ser{room, message, user}->client 
+  ser{room, message, user}->client 
+  ser{room, message, user}->client 
+  ser{room, message, user}->client 
+  ser{room, message, user}->client 
+  ....
+  
+  ser{cod, 200}->client (malo)
+  .... -->
