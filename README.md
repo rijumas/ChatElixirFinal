@@ -26,16 +26,16 @@ El sistema una vez ejecutado se desplagara y podra ser accedido por un navegador
 ## Muestra
 
 # Registro
-<img src="/images/register_02.png" alt="register" width="50%">
+<img src="/images/register_02.png" alt="register" width="70%">
 
 # Inicio de sesión
-<img src="/images/SingIn_01.png" alt="login" width="50%">
+<img src="/images/SingIn_01.png" alt="login" width="70%">
 
 # Creación de sala
-<img src="/images/newRoom_01.png" alt="create_room" width="50%">
+<img src="/images/newRoom_01.png" alt="create_room" width="70%">
 
 # Unirse a la sala
-<img src="/images/newRoom_01.png" alt="join_room" width="50%">
+<img src="/images/newRoom_01.png" alt="join_room" width="70%">
 
 # Enviar mensajes
-<img src="/images/sendMsg_01.png" alt="send_message" width="50%">
+<img src="/images/sendMsg_01.png" alt="send_message" width="70%">
