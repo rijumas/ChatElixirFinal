@@ -1,5 +1,6 @@
 defmodule ExChat.Web.WebSocketController do
   @behaviour :cowboy_websocket
+  require Logger
 
   alias ExChat.MessageStore
   alias ExChat.UseCases.{ValidateAccessToken, SendMessageToChatRoom,
@@ -37,10 +38,7 @@ defmodule ExChat.Web.WebSocketController do
     {:reply, {:text, to_json(message)}, session_id}
   end
 
-
   defp handle(%{"command" => "join", "room" => room}, session_id) do
-    # Al unirse a una sala, obtén los mensajes existentes
-    messages = ExChat.MessageStore.get_messages(room)
 
     # Continúa con el resto del manejo del comando
     case JoinChatRoom.on(room, session_id) do
@@ -59,17 +57,16 @@ defmodule ExChat.Web.WebSocketController do
 
 
   defp handle(%{"room" => room, "message" => message}, session_id) do
-    # Continúa con el resto del manejo del mensaje
-    IO.inspect(message, label: "Mensaje que llega al WebSocket")
-    IO.inspect(session_id, label: "Este es el usuario")
+
+    #Logger.info("\n SendMessage \n")
 
     case SendMessageToChatRoom.on(message, room, session_id) do
-
       {:error, message} ->
         {:reply, {:text, to_json(%{error: message})}, session_id}
       :ok ->
         # Almacenar el mensaje en el historial de la sala
         ExChat.MessageStore.add_message(room, session_id, message)
+
         # Imprimir el mensaje almacenado
         ExChat.MessageStore.print_messages(room)
 
@@ -78,6 +75,9 @@ defmodule ExChat.Web.WebSocketController do
   end
 
   defp handle(%{"command" => "create", "room" => room}, session_id) do
+
+    Logger.info("\n Crear sala \n")
+
     response = case CreateChatRoom.on(room) do
       {:ok, message} -> %{success: message}
       {:error, message} -> %{error: message}
@@ -102,21 +102,24 @@ defmodule ExChat.Web.WebSocketController do
     end
   end
 
-
   defp send_stored_messages([], _room, _session_id), do: :ok
   defp send_stored_messages([message | rest], room, session_id) do
-    # Envía un mensaje almacenado al usuario
 
+    # Envia un mensaje almacenado al usuario
     case SendMessageToChatRoom.on(message, room, session_id) do
       {:error, message} ->
         {:reply, {:text, to_json(%{error: message})}, session_id}
       :ok ->
+        # Almacenar el mensaje en el historial de la sala
+        ExChat.MessageStore.add_message(room, session_id, message)
+
+        # Imprimir el mensaje almacenado
+        ExChat.MessageStore.print_messages(room)
+
         {:ok, session_id}
     end
-    IO.inspect(message, label: "this message: ")
 
     # Llama recursivamente para enviar el siguiente mensaje
     send_stored_messages(rest, room, session_id)
   end
-
 end

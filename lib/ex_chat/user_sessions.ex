@@ -62,7 +62,7 @@ defmodule ExChat.UserSessions do
 
   defp find(session_id) do
     listG = ExChat.GlobalListUS.get_list()
-    IO.inspect(listG, label: "Contenido de la lista global:")
+    #IO.inspect(listG, label: "Contenido de la lista global:")
     find_US(session_id,listG)
   end
 
