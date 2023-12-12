@@ -187,41 +187,62 @@
         output = document.getElementById("output");
         testWebSocket();
       }
+      
       function testWebSocket() {
         websocket = new WebSocket(wsUri + "?access_token=" + getParameterByName("access_token"));
         websocket.onopen = function(evt) { onOpen(evt) };
         websocket.onclose = function(evt) { onClose(evt) };
-        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) }; // entrega del server
         websocket.onerror = function(evt) { onError(evt) };
       }
+      
       function onOpen(evt) {
         writeToScreen("CONNECTED");
         //doSend(JSON.stringify({command: "join"}));
       }
+      
       function onClose(evt) {
         writeToScreen("DISCONNECTED pipipi");
       }
+      
       function onMessage(evt) {
         response = JSON.parse(evt.data);
         console.log(" -> Mensaje del servidor: ", response)
-        
+        console.log(response.success)
+
         if (isError(response)) {
           writeToScreen('<span style="color: red;">ERROR: ' + response.error + '</span>');
-        } else if (isSuccess(response)) {
+        } 
+        else if (isSuccess(response)) { // Success
           writeToScreen('<span style="color: green;">SUCCESS: ' + response.success + '</span>');
-        } else if (isSystemMessage(response)) {
-          writeToScreen('<span style="color: gray;">' + response.room +': ' + response.message + '</span>');
-        } else {
+        } 
+        else if (isSystemMessage(response)) {
+
+          if(isCorrectJoin(response))
+          {
+            requestRoomMessages();
+          }
+          else{
+              
+            writeToScreen('<span style="color: gray;">' + "Is on the room"+'</span>');
+          }
+          //writeToScreen('<span style="color: gray;">' + response.room +': ' + response.message + '</span>');
+        } 
+        else {
+            // nothing
+          
           writeToScreen('<span style="color: blue;">' + response.from + ' : ' + response.message + '</span>');
-        }
-      }
-      function onError(evt) {
+        }            }      
+
+            function onError(evt) {
         writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
       }
+      
       function doSend(message) {
         //writeToScreen("SENT: " + message);
         websocket.send(message);
       }
+      
       function writeToScreen(message) {
         var pre = document.createElement("p");
         pre.style.wordWrap = "break-word";
@@ -237,12 +258,30 @@
       function isError(response) {
         return response.error != undefined
       }
+      
       function isSuccess(response) {
         return response.success != undefined
       }
+      
       function isSystemMessage(response) {
-        return response.from == undefined
+        return response.cod != undefined
       }
+
+      function isCorrectJoin(reponse){
+        if (response.cod == "100")
+          return true;
+        return false; 
+      }
+
+      function requestRoomMessages() {
+        request = {
+          command: "getAllMesg", 
+          room: message_box_room_input.value,
+        }
+        console.log(" -> Enviando mensaje: ", request)
+        
+      }
+
       /* From: https://stackoverflow.com/a/5158301 */
       function getParameterByName(name) {
         var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
@@ -250,26 +289,4 @@
       }
     </script>
   </body>
-  </html>
-
-
-
-
-
-
-  <!-- cli{join}->server
-  ser{room, message}->client (bueno)
-  ser{erro}->client (malo)
-
-  cli{join}->server
-  ser{cod, 100}->client (bueno) 
-  cli{default, messages}->server
-  ser{room, message, user}->client 
-  ser{room, message, user}->client 
-  ser{room, message, user}->client 
-  ser{room, message, user}->client 
-  ser{room, message, user}->client 
-  ....
-  
-  ser{cod, 200}->client (malo)
-  .... -->
+</html>
