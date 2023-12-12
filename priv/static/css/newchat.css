@@ -1,0 +1,134 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.navbar {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 70px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.logout-button {
+  background-color: #050505;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px; /* Agregado espacio entre el botón y el logo */
+  transition: color 0.5s ease, background-color 0.5s ease;
+}
+
+.logout-button:hover {
+  background-color: #fff;
+  color: #050505;
+  margin-left: auto;
+}
+
+.container {
+  display: flex;
+  height: 90vh;
+}
+
+.section {
+  flex: 1;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+  max-height: 100%;
+  box-sizing: border-box; /* Agregamos esta propiedad */
+}
+
+#message-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+#message-container {
+  flex: 1;
+  overflow-y: auto;
+  border-bottom: 1px solid #ccc;
+}
+
+#message-box-wrapper {
+  display: flex;
+}
+
+#message-box-input {
+  flex: 1;
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#join-room-button {
+  background-color: #3498db;
+  color: #fff;
+}
+
+#create-room-button,
+#message-box-send-button {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+h2,
+h3 {
+  margin-top: 0;
+}
+
+#create-room-section {
+  display: block;
+}
+
+/* status connection */
+
+.connection-status {
+  padding: 10px;
+  color: #161616;
+  border-radius: 4px;
+  margin-right: 10px;
+  transition: background-color 0.5s ease;
+}
+
+.connected {
+  background-color: #2ecc71; /* Verde */
+}
+
+.disconnected {
+  background-color: #e74c3c; /* Rojo */
+}

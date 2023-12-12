@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetaChat Elixir</title>
+  <link rel="icon" href="images/chat.png" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="css/newchat.css">
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">
+      <img src="images/chat.png" alt="Logo">
+      <div class="title">MetaChat Elixir</div>
+    </div>
+    <div id="connection-status" class="connection-status disconnected">Disconnected</div>
+    <button class="logout-button" onclick="logout()">Logout</button>
+  </div>
+  <div id="output"></div>
+    <div class="container">
+      <div class="section" id="room-section">
+        <h2>Room Selection</h2>
+        <input type="text" id="join-room-input" placeholder="Enter Room Name">
+        <button id="join-room-button" onclick="joinRoom()">Join Room</button>
+      </div>
+
+      <div class="section" id="message-section">
+        <h2>Messages</h2>
+        <div id="message-container"></div>
+        <div id="message-box-wrapper">
+          <input id="message-box-input" type="text" placeholder="Type your message...">
+          <button id="message-box-send-button" onclick="sendMessage()">Send Message</button>
+        </div>
+      </div>
+
+      <div class="section" id="create-room-section">
+        <h2>Create New Room</h2>
+        <input type="text" id="create-room-input" placeholder="Enter Room Name">
+        <button id="create-room-button" onclick="createRoom()">Create Room</button>
+      </div>
+    </div>
+  <script src="js/chat.js"></script>
+</body>
+</html>

@@ -8,11 +8,6 @@ defmodule ExChat.Web.Router do
   plug :match
   plug :dispatch
 
-  # def start(_type, _args) do
-  #   # Inicia el almacenamiento de mensajes
-  #   ExChat.MessageStore.start_link([])
-  #   # Resto del código de inicio
-  # end
 
   match "/" do
     login_file_path = "priv/static/login.html"
@@ -86,7 +81,7 @@ defmodule ExChat.Web.Router do
   end
 
   get "meta_chat" do
-    chat_file_path = "priv/static/chat.html"
+    chat_file_path = "priv/static/newchat.html"
     chat_content = File.read!(chat_file_path)
     html_response(conn, chat_content)
   end

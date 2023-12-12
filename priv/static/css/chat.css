@@ -1,0 +1,119 @@
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url('images/foto.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+h2 {
+    color: white;
+    font-size: 1.5em;
+    font-weight: 300;
+    background-color: #191970;
+    width: 100%;
+    padding: 20px 0;
+    margin: 0;
+}
+
+#message_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    top: 60px;
+}
+
+#output {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    top: 60px;
+    margin-bottom: 150px;
+}
+
+#message_box_wrapper {
+    background-color: white;
+    padding: 20px;
+    border-radius: 0;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column; /* Cambiado de "row" a "column" */
+    align-items: flex-start; /* Añadido para alinear los elementos a la izquierda */
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    top: 590px;
+}
+
+#message_box {
+    width: 90%;
+    display: flex;
+    flex-direction: row; /* Añadido para colocar los elementos en una fila */
+    align-items: center; /* Añadido para centrar verticalmente los elementos */
+}
+
+input[type="text"] {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1; /* Añadido para que el input ocupe el espacio disponible */
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button#message_box_join_button {
+    background-color: #3498db;
+    color: #fff;
+}
+
+button#message_box_create_button {
+    background-color: #2ecc71;
+    color: #fff;
+}
+
+button#message_box_send_button {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+p {
+    animation: fadeIn 0.5s ease;
+    margin: 5px 0;
+    word-wrap: break-word;
+    background-color: rgba(200, 200, 200, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    
+}
