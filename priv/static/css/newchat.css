@@ -40,7 +40,7 @@ body {
 .logout-button:hover {
   background-color: #fff;
   color: #050505;
-  margin-left: auto;
+  /* margin-left: auto; */
 }
 
 .container {
@@ -58,6 +58,26 @@ body {
   box-sizing: border-box; /* Agregamos esta propiedad */
 }
 
+.message {
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 8px;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background-color: #2ecc71; /* Mensajes del usuario actual (color verde) */
+  color: #fff;
+  text-align: right;
+  align-self: flex-end; /* Alinear los mensajes del usuario a la derecha */
+}
+
+
+.other-user-message {
+  background-color: #3498db; /* Mensajes de otros usuarios (color azul) */
+  color: #fff;
+  text-align: left;
+}
 #message-section {
   flex: 2;
   display: flex;
@@ -68,6 +88,13 @@ body {
   flex: 1;
   overflow-y: auto;
   border-bottom: 1px solid #ccc;
+  display: flex;
+  flex-direction: column; 
+}
+
+.room {
+  align-items: flex-start;
+  display: none;
 }
 
 #message-box-wrapper {
@@ -131,4 +158,38 @@ h3 {
 
 .disconnected {
   background-color: #e74c3c; /* Rojo */
+}
+
+
+.system-message {
+  color: gray;
+}
+
+.error-message {
+  color: red;
+}
+
+.success-message {
+  color: green;
+}
+
+/* joins buttons */
+
+.room-access-button {
+  display: block;
+  width: 100%; /* Ocupar el ancho completo del contenedor */
+  margin-top: 5px;
+  padding: 8px;
+  background-color: #383838;
+  color: white;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  box-sizing: border-box; /* Evitar que el relleno afecte el ancho total */
+}
+
+.room-access-button:hover {
+  background-color: #747474;
 }

@@ -16,11 +16,11 @@
     doSend(JSON.stringify(request))
   }
 
+  selectedRoom = "default"
   function sendMessage() {
-    var messageBoxRoomInput = document.getElementById("message_box_room_input");
-    var messageBoxInput = document.getElementById("message_box_input");
+    var messageBoxInput = document.getElementById("message-box-input");
     request = {
-      room: message_box_room_input.value,
+      room: selectedRoom,
       message: messageBoxInput.value
     }
     console.log(request)
@@ -32,12 +32,14 @@
   var wsUri = "ws://" + location.host + "/chat";
   var output;
   var websocket;
-
+  var username;
   function init() {
     output = document.getElementById("output");
     testWebSocket();
   }
   function testWebSocket() {
+    username = extractUsername(getParameterByName("access_token"))
+    console.log("this is the name:", name)
     websocket = new WebSocket(wsUri + "?access_token=" + getParameterByName("access_token"));
     websocket.onopen = function(evt) { onOpen(evt) };
     websocket.onclose = function(evt) { onClose(evt) };
@@ -64,18 +66,71 @@
   }
   function onMessage(evt) {
     response = JSON.parse(evt.data);
-    console.log(response)
-    
+    console.log(response);
+  
     if (isError(response)) {
-      writeToScreen('<span style="color: red;">ERROR: ' + response.error + '</span>');
+      var createRoomSection = document.getElementById("create-room-section");
+      var errorMessage = document.createElement("div");
+      errorMessage.innerHTML = '<span style="color: red;">ERROR: ' + response.error + '</span>';
+      createRoomSection.appendChild(errorMessage);
     } else if (isSuccess(response)) {
-      writeToScreen('<span style="color: green;">SUCCESS: ' + response.success + '</span>');
+      var createRoomSection = document.getElementById("create-room-section");
+      var successMessage = document.createElement("div");
+      successMessage.innerHTML = '<span style="color: green;">Good: ' + response.success + '</span>';
+      createRoomSection.appendChild(successMessage);
     } else if (isSystemMessage(response)) {
-      writeToScreen('<span style="color: gray;">' + response.room +': ' + response.message + '</span>');
+      if(response.cod == "100") // unirse a una sala a la que no te has unido
+      {
+        var createRoomSection = document.getElementById("create-room-section");
+        var systemMessage = document.createElement("div");
+        systemMessage.innerHTML = '<span style="color: gray;"> Joined to: ' + response.room + '</span>';
+        createRoomSection.appendChild(systemMessage);
+
+        // add button
+        var joinRoomSection = document.getElementById("room-section");
+        var joinRoomButton = document.createElement("button");
+        joinRoomButton.innerHTML = response.room;
+        joinRoomButton.className = 'room-access-button';
+        joinRoomButton.id = response.room
+        joinRoomButton.onclick = function () {
+          accessRoom(joinRoomButton.id);
+        };
+        joinRoomSection.appendChild(joinRoomButton);
+
+        var container = document.getElementById("message-container");
+        var roomDiv = document.createElement("div");
+        roomDiv.id = response.room + "-room";
+        roomDiv.className = "room"
+        container.appendChild(roomDiv);
+
+      }
+      else{ // ya unido a la sala 200
+        var createRoomSection = document.getElementById("create-room-section");
+        var systemMessage = document.createElement("div");
+        systemMessage.innerHTML = '<span style="color: gray;"> you have already joined the room: ' + response.room + '</span>';
+        createRoomSection.appendChild(systemMessage);
+      }
     } else {
-      writeToScreen('<span style="color: blue;">' + response.from + ' : ' + response.message + '</span>');
+      console.log(response)
+      var messageClass = response.from === username ? 'user-message' : 'other-user-message';
+      writeToScreen('<span style="font-weight: bold;">' + response.from + ':</span> ' + response.message, messageClass, response. room);
     }
   }
+
+  function accessRoom(roomName) {
+    // Ocultar todos los divs con la clase 'room'
+    console.log("clicked ", roomName)
+    var allRoomDivs = document.querySelectorAll('.room');
+    allRoomDivs.forEach(function (div) {
+      div.style.display = 'none';
+    });
+    selectedRoom = roomName
+    // Mostrar el div específico de la sala a la que se accede
+    var accessedRoomDiv = document.getElementById(roomName + '-room');
+    accessedRoomDiv.style.display = 'block';
+  }
+  
+  
   function onError(evt) {
     writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
   }
@@ -83,14 +138,18 @@
     //writeToScreen("SENT: " + message);
     websocket.send(message);
   }
-  function writeToScreen(message) {
-    var pre = document.createElement("p");
-    pre.style.wordWrap = "break-word";
-    pre.style.backgroundColor = "rgba(200, 200, 200, 0.8)"; // Fondo semi-transparente gris claro
-    pre.style.padding = "10px"; // Ajusta el espacio interno según tus preferencias
-    pre.style.borderRadius = "8px"; // Bordes curvos
-    pre.innerHTML = message;
-    output.appendChild(pre);
+  function writeToScreen(message, messageClass, room) {
+    // var container = document.getElementById("message-container");
+    var roomDiv = document.getElementById(room+"-room")
+
+    var messageDiv = document.createElement("div");
+    messageDiv.className = "message " + messageClass;
+  
+    var messageSpan = document.createElement("span");
+    messageSpan.innerHTML = message;
+  
+    messageDiv.appendChild(messageSpan);
+    roomDiv.appendChild(messageDiv);
   }
   window.addEventListener("load", init, false);
 
@@ -102,7 +161,9 @@
     return response.success != undefined
   }
   function isSystemMessage(response) {
-    return response.from == undefined
+
+    console.log("system messg:",response)
+    return response.cod != undefined
   }
   /* From: https://stackoverflow.com/a/5158301 */
   function getParameterByName(name) {
@@ -110,7 +171,19 @@
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
   }
 
+  function extractUsername(token) {
+    return token ? token.split("_")[0] : null;
+  }
+
   function logout() {
     // Redirige a la página principal (puedes ajustar la URL según tu estructura)
     window.location.href = "/";
   }
+
+  function checkEnterMessage(event) {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  }
+
+  

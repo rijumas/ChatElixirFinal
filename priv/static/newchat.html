@@ -20,7 +20,7 @@
     <div class="container">
       <div class="section" id="room-section">
         <h2>Room Selection</h2>
-        <input type="text" id="join-room-input" placeholder="Enter Room Name">
+        <input type="text" id="join-room-input" placeholder="Enter Room Name" value="default">
         <button id="join-room-button" onclick="joinRoom()">Join Room</button>
       </div>
 
@@ -28,7 +28,7 @@
         <h2>Messages</h2>
         <div id="message-container"></div>
         <div id="message-box-wrapper">
-          <input id="message-box-input" type="text" placeholder="Type your message...">
+          <input id="message-box-input" type="text" required placeholder="Type your message..." onkeypress="checkEnterMessage(event)">
           <button id="message-box-send-button" onclick="sendMessage()">Send Message</button>
         </div>
       </div>
